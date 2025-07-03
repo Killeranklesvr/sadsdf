@@ -1,0 +1,184 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "ScriptGui"
+gui.ResetOnSpawn = false
+gui.Parent = playerGui
+
+-- Main Frame
+local main = Instance.new("Frame", gui)
+main.Name = "Main"
+main.Size = UDim2.new(0, 650, 0, 400)
+main.Position = UDim2.new(0.5, -325, 0.5, -200)
+main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+main.BorderColor3 = Color3.fromRGB(140, 0, 255)
+main.BorderSizePixel = 2
+
+-- Add lines for visual style
+local function createLine(parent, position, size)
+	local line = Instance.new("Frame")
+	line.BackgroundColor3 = Color3.fromRGB(140, 0, 255)
+	line.BorderSizePixel = 0
+	line.Position = position
+	line.Size = size
+	line.Parent = parent
+end
+
+-- Top line
+createLine(main, UDim2.new(0, 0, 0, 38), UDim2.new(1, 0, 0, 2))
+-- Left vertical line
+createLine(main, UDim2.new(0, 120, 0, 40), UDim2.new(0, 2, 1, -40))
+
+-- Buttons container
+local buttons = Instance.new("Frame", main)
+buttons.Name = "Buttons"
+buttons.Size = UDim2.new(1, 0, 1, 0)
+buttons.BackgroundTransparency = 1
+
+-- Header Line
+local line = Instance.new("Frame", buttons)
+line.Name = "Line"
+line.Size = UDim2.new(1, 0, 0, 40)
+line.BackgroundTransparency = 1
+
+-- Menu Text
+local menuText = Instance.new("TextLabel", line)
+menuText.Name = "MenuText"
+menuText.Size = UDim2.new(0, 200, 0, 30)
+menuText.Position = UDim2.new(0, 10, 0, 5)
+menuText.BackgroundTransparency = 1
+menuText.Text = "Tubers93 Hub"
+menuText.TextColor3 = Color3.fromRGB(140, 0, 255)
+menuText.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Version Text (Fixed position)
+local versionText = Instance.new("TextLabel", line)
+versionText.Name = "VersionText"
+versionText.Size = UDim2.new(0, 60, 0, 30)
+versionText.Position = UDim2.new(1, -105, 0, 5)
+versionText.BackgroundTransparency = 1
+versionText.Text = "1.0.0"
+versionText.TextColor3 = Color3.fromRGB(140, 0, 255)
+versionText.TextXAlignment = Enum.TextXAlignment.Right
+
+-- Exit Button
+local exitButton = Instance.new("TextButton", line)
+exitButton.Name = "ExitButton"
+exitButton.Size = UDim2.new(0, 30, 0, 30)
+exitButton.Position = UDim2.new(1, -35, 0, 5)
+exitButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+exitButton.BorderColor3 = Color3.fromRGB(140, 0, 255)
+exitButton.Text = "X"
+exitButton.TextColor3 = Color3.fromRGB(140, 0, 255)
+
+-- Line2 (Main button area)
+local line2 = Instance.new("Frame", buttons)
+line2.Name = "Line2"
+line2.Size = UDim2.new(1, 0, 1, 0)
+line2.BackgroundTransparency = 1
+
+-- Player Button
+local playerButton = Instance.new("TextButton", line2)
+playerButton.Name = "PlayerButton"
+playerButton.Size = UDim2.new(0, 100, 0, 30)
+playerButton.Position = UDim2.new(0, 10, 0, 50)
+playerButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+playerButton.BorderColor3 = Color3.fromRGB(140, 0, 255)
+playerButton.Text = "Player"
+playerButton.TextColor3 = Color3.fromRGB(140, 0, 255)
+
+-- Fling Button
+local flingButton = Instance.new("TextButton", line2)
+flingButton.Name = "FlingButton"
+flingButton.Size = UDim2.new(0, 200, 0, 30)
+flingButton.Position = UDim2.new(0, 130, 0, 50)
+flingButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+flingButton.BorderColor3 = Color3.fromRGB(140, 0, 255)
+flingButton.Text = "Fling Selected Player"
+flingButton.TextColor3 = Color3.fromRGB(140, 0, 255)
+
+-- PlayerToFling TextBox
+local playerToFling = Instance.new("TextBox", flingButton)
+playerToFling.Name = "PlayerToFling"
+playerToFling.Size = UDim2.new(1, 0, 0, 30)
+playerToFling.Position = UDim2.new(0, 0, 1, 5)
+playerToFling.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+playerToFling.BorderColor3 = Color3.fromRGB(140, 0, 255)
+playerToFling.Text = "Put Selected Player Here"
+playerToFling.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Teleport Button
+local teleportButton = Instance.new("TextButton", line2)
+teleportButton.Name = "TeleportButton"
+teleportButton.Size = UDim2.new(0, 200, 0, 30)
+teleportButton.Position = UDim2.new(0, 350, 0, 50)
+teleportButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+teleportButton.BorderColor3 = Color3.fromRGB(140, 0, 255)
+teleportButton.Text = "Teleport To Selected Player"
+teleportButton.TextColor3 = Color3.fromRGB(140, 0, 255)
+
+-- PlayerToTeleportTo TextBox
+local playerToTeleport = Instance.new("TextBox", teleportButton)
+playerToTeleport.Name = "PlayerToTeleportTo"
+playerToTeleport.Size = UDim2.new(1, 0, 0, 30)
+playerToTeleport.Position = UDim2.new(0, 0, 1, 5)
+playerToTeleport.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+playerToTeleport.BorderColor3 = Color3.fromRGB(140, 0, 255)
+playerToTeleport.Text = "Put Selected Player Here"
+playerToTeleport.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- 📦 Functionality
+
+-- Exit GUI
+exitButton.MouseButton1Click:Connect(function()
+	gui:Destroy()
+end)
+
+-- Auto-select first other player
+playerButton.MouseButton1Click:Connect(function()
+	for _, p in pairs(Players:GetPlayers()) do
+		if p ~= player then
+			playerToFling.Text = p.Name
+			playerToTeleport.Text = p.Name
+			break
+		end
+	end
+end)
+
+-- Fling
+flingButton.MouseButton1Click:Connect(function()
+	local targetName = playerToFling.Text
+	local targetPlayer = Players:FindFirstChild(targetName)
+
+	if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+		local hrp = targetPlayer.Character.HumanoidRootPart
+
+		local bv = Instance.new("BodyVelocity")
+		bv.Velocity = Vector3.new(0, 500, 0)
+		bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+		bv.P = 1250
+		bv.Name = "FlingForce"
+		bv.Parent = hrp
+
+		game.Debris:AddItem(bv, 0.5)
+	else
+		warn("Cannot fling: Invalid target or missing HRP")
+	end
+end)
+
+-- Teleport
+teleportButton.MouseButton1Click:Connect(function()
+	local targetName = playerToTeleport.Text
+	local targetPlayer = Players:FindFirstChild(targetName)
+
+	if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and
+		player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+
+		player.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(2, 0, 2)
+	else
+		warn("Teleport failed: Invalid target or self")
+	end
+end)
