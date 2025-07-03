@@ -17,6 +17,10 @@ main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 main.BorderColor3 = Color3.fromRGB(140, 0, 255)
 main.BorderSizePixel = 2
 
+-- 👇 Draggable
+main.Active = true
+main.Draggable = true
+
 -- Add lines for visual style
 local function createLine(parent, position, size)
 	local line = Instance.new("Frame")
@@ -54,7 +58,7 @@ menuText.Text = "Tubers93 Hub"
 menuText.TextColor3 = Color3.fromRGB(140, 0, 255)
 menuText.TextXAlignment = Enum.TextXAlignment.Left
 
--- Version Text (Fixed position)
+-- Version Text
 local versionText = Instance.new("TextLabel", line)
 versionText.Name = "VersionText"
 versionText.Size = UDim2.new(0, 60, 0, 30)
@@ -90,18 +94,18 @@ playerButton.BorderColor3 = Color3.fromRGB(140, 0, 255)
 playerButton.Text = "Player"
 playerButton.TextColor3 = Color3.fromRGB(140, 0, 255)
 
--- Fling Button
-local flingButton = Instance.new("TextButton", line2)
-flingButton.Name = "FlingButton"
-flingButton.Size = UDim2.new(0, 200, 0, 30)
-flingButton.Position = UDim2.new(0, 130, 0, 50)
-flingButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-flingButton.BorderColor3 = Color3.fromRGB(140, 0, 255)
-flingButton.Text = "Fling Selected Player"
-flingButton.TextColor3 = Color3.fromRGB(140, 0, 255)
+-- Follow Button
+local followButton = Instance.new("TextButton", line2)
+followButton.Name = "FollowButton"
+followButton.Size = UDim2.new(0, 200, 0, 30)
+followButton.Position = UDim2.new(0, 130, 0, 50)
+followButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+followButton.BorderColor3 = Color3.fromRGB(140, 0, 255)
+followButton.Text = "Follow Selected Player"
+followButton.TextColor3 = Color3.fromRGB(140, 0, 255)
 
--- PlayerToFling TextBox
-local playerToFling = Instance.new("TextBox", flingButton)
+-- PlayerToFling (used for follow)
+local playerToFling = Instance.new("TextBox", followButton)
 playerToFling.Name = "PlayerToFling"
 playerToFling.Size = UDim2.new(1, 0, 0, 30)
 playerToFling.Position = UDim2.new(0, 0, 1, 5)
@@ -130,14 +134,14 @@ playerToTeleport.BorderColor3 = Color3.fromRGB(140, 0, 255)
 playerToTeleport.Text = "Put Selected Player Here"
 playerToTeleport.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- 📦 Functionality
+-- Functionality
 
--- Exit GUI
+-- Close GUI
 exitButton.MouseButton1Click:Connect(function()
 	gui:Destroy()
 end)
 
--- Auto-select first other player
+-- Auto-fill player
 playerButton.MouseButton1Click:Connect(function()
 	for _, p in pairs(Players:GetPlayers()) do
 		if p ~= player then
@@ -148,28 +152,57 @@ playerButton.MouseButton1Click:Connect(function()
 	end
 end)
 
--- Fling
-flingButton.MouseButton1Click:Connect(function()
+-- Follow Logic
+local isFollowing = false
+local followConnection
+
+followButton.MouseButton1Click:Connect(function()
 	local targetName = playerToFling.Text
 	local targetPlayer = Players:FindFirstChild(targetName)
 
-	if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-		local hrp = targetPlayer.Character.HumanoidRootPart
-
-		local bv = Instance.new("BodyVelocity")
-		bv.Velocity = Vector3.new(0, 500, 0)
-		bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
-		bv.P = 1250
-		bv.Name = "FlingForce"
-		bv.Parent = hrp
-
-		game.Debris:AddItem(bv, 0.5)
-	else
-		warn("Cannot fling: Invalid target or missing HRP")
+	if not targetPlayer or not targetPlayer.Character or not targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+		warn("Invalid target for following.")
+		return
 	end
+
+	if isFollowing then
+		isFollowing = false
+		if followConnection then
+			followConnection:Disconnect()
+			followConnection = nil
+		end
+		followButton.Text = "Follow Selected Player"
+		return
+	end
+
+	isFollowing = true
+	followButton.Text = "Stop Following"
+
+	local function follow()
+		local myHumanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		local myRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+		if myHumanoid and myRoot and targetRoot then
+			myHumanoid:MoveTo(targetRoot.Position)
+		end
+	end
+
+	followConnection = game:GetService("RunService").Heartbeat:Connect(function()
+		if not isFollowing or not player.Character or not targetPlayer.Character then
+			isFollowing = false
+			if followConnection then
+				followConnection:Disconnect()
+				followConnection = nil
+			end
+			followButton.Text = "Follow Selected Player"
+			return
+		end
+		follow()
+	end)
 end)
 
--- Teleport
+-- Teleport Logic
 teleportButton.MouseButton1Click:Connect(function()
 	local targetName = playerToTeleport.Text
 	local targetPlayer = Players:FindFirstChild(targetName)
